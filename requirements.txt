@@ -2,13 +2,16 @@ certifi==2020.6.20
 chardet==3.0.4
 colorama==0.4.4
 deepspeech-tflite==0.8.2
+python-dotenv==0.15.0
 enum34==1.1.10
 Flask==1.1.2
+flask-api==2.0
 halo==0.0.30
 idna==2.10
 ifaddr==0.1.7
 log-symbols==0.0.14
 lxml==4.6.1
+marshmallow==3.10.0
 netdisco==2.8.2
 numpy==1.19.2
 PyAudio==0.2.11
@@ -21,6 +24,7 @@ spinners==0.0.24
 termcolor==1.1.0
 uPnPClient==0.0.8
 urllib3==1.25.11
+webargs==7.0.1
 webrtcvad==2.0.10
 Werkzeug==1.0.1
 zeroconf==0.28.6
