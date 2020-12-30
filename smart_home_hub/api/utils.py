@@ -5,23 +5,7 @@ from marshmallow import fields
 
 from smart_home_hub.utils.env_consts import API_KEY
 from smart_home_hub.utils.utils import titleize
-
-# NOTE: Do not include fields.Number or fields.Double to preserve the
-# 1-1 mapping. If these fields are used, a KeyError will be thrown
-FIELD_TO_STR_MAP = {
-    fields.Str: 'string',
-    fields.Int: 'integer',
-    fields.Float: 'float',
-    fields.Bool: 'boolean',
-    fields.DateTime: 'datetime',
-
-    fields.List: 'list',
-    fields.Dict: 'object'
-}
-STR_TO_FIELD_MAP = {
-    v: k
-    for k, v in FIELD_TO_STR_MAP.items()
-}
+from smart_home_hub.utils.argmap_utils import FIELD_TO_STR_MAP
 
 
 def argmap_resp_obj(argmap):

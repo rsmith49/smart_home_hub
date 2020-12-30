@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from copy import deepcopy
+from marshmallow import fields
 from typing import List
 
 from ..utils.utils import DescClass
@@ -49,6 +50,12 @@ class DeviceAction(DescClass, metaclass=ABCMeta):
         """
         return self.resp
 
+    def set_msg(self, new_msg):
+        """
+        Sets the message of the response with a new string
+        """
+        self.resp['message'] = new_msg
+
     @abstractmethod
     def perform(self):
         """
@@ -57,6 +64,48 @@ class DeviceAction(DescClass, metaclass=ABCMeta):
         NOTE: Should also set self.resp here, unless you want to override
               self.response()
         """
+
+
+class ListActions(DeviceAction):
+    """
+    An action that all devices should have, which lists the actions available
+    to the device in the response.
+    """
+    _name = 'list'
+
+    def argmap(self) -> dict:
+        return {}
+
+    def perform(self):
+        self.set_msg(
+            ', '.join(self.device.action_map().keys())
+        )
+
+
+class ListActionArgs(DeviceAction):
+    """
+    An action that all devices should have, which lists the arguments available
+    to the action specified.
+    """
+    _name = 'list_args'
+
+    def argmap(self):
+        return {
+            'action': fields.Str(
+                required=True,
+                voice_ndx=0
+            )
+        }
+
+    def perform(self):
+        # TODO: Make this better? Aka maybe list the requirements too and stuff
+        self.set_msg(
+            ', '.join(
+                self.device.action_map()[
+                    self.args['action'].lower()
+                ].argmap().keys()
+            )
+        )
 
 
 class Device(DescClass, metaclass=ABCMeta):
@@ -81,7 +130,10 @@ class Device(DescClass, metaclass=ABCMeta):
         """
         Should return a list of all available actions for this device
         """
-        return []
+        return [
+            ListActions(self),
+            ListActionArgs(self)
+        ]
 
     def action_map(self):
         """

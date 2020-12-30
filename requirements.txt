@@ -27,4 +27,5 @@ urllib3==1.25.11
 webargs==7.0.1
 webrtcvad==2.0.10
 Werkzeug==1.0.1
+word2number==1.1
 zeroconf==0.28.6

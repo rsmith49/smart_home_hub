@@ -1,7 +1,7 @@
 import requests
 import upnpclient
 
-from marshmallow import fields
+from marshmallow import fields, validate
 from typing import List, Union
 
 from ..base_device import DeviceAction
@@ -98,9 +98,10 @@ class Volume(DeviceAction):
 
     def argmap(self) -> dict:
         return {
-            'raise': fields.Bool(
+            'direction': fields.Str(
                 required=True,
-                voice_ndx=0
+                voice_ndx=0,
+                validate=validate.OneOf(['up', 'down'])
             ),
             'units': fields.Int(
                 missing=1,
@@ -110,7 +111,7 @@ class Volume(DeviceAction):
 
     def perform(self):
         for _ in range(self.args['units']):
-            if self.args['raise']:
+            if self.args['direction'] == 'up':
                 endpoint = keypress_endpoint('volumeUp')
             else:
                 endpoint = keypress_endpoint('volumeDown')

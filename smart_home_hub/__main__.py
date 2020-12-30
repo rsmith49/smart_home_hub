@@ -9,11 +9,13 @@ from queue import Queue
 
 sys.path.append(os.getcwd())
 
+# TODO: 2 different contexts, or should we have a lock over the context?
+
 # Loading environment variables before imports (in case any are env dependent)
 load_dotenv(find_dotenv(raise_error_if_not_found=True, usecwd=True))
 
-from .api.api import app
-from .utils.env_consts import API_PORT
+from smart_home_hub.api.api import app
+from smart_home_hub.utils.env_consts import API_PORT
 
 
 api_thread = threading.Thread(
