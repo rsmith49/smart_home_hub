@@ -11,6 +11,7 @@ from marshmallow import fields
 
 from smart_home_hub.devices import device_class_map
 from smart_home_hub.devices.base_device import Device, DeviceAction
+from smart_home_hub.utils.config_class import Config
 from .general_actions import GenericDevice
 from .stt import SpeechToText, CommandParser
 
@@ -22,9 +23,17 @@ class NextCommandException(Exception):
         self.msg = msg
 
 
-def get_context():
-    # TODO: Make this work
-    pass
+# TODO: Would we rather have a shared config between VUI and API?
+class VUIContext(Config):
+    """
+    The context Config used by the VUI thread.
+    """
+    def rel_filepath(self) -> str:
+        return 'vui_context.json'
+
+    @classmethod
+    def config_map(cls):
+        return {}
 
 
 class VUI:
@@ -48,28 +57,23 @@ class VUI:
         :param context: A dict of JSON context surrounding the command
         :return: The Device object we are retrieving
         """
-        general_actions = GenericDevice().action_map().keys()
+        general_actions = GenericDevice().action_names()
+        if input_.prefix_from(general_actions, pop_if_true=False):
+            # Cutting off logic if the first element of the input string is
+            # a general action
+            return GenericDevice(context=context)
 
         if context is not None and context.get('device'):
             device_name = context['device']
         else:
-            device_name = input_.words[0]
-
-            # Cutting off logic if the first element of the input string is
-            # a general action
-            if device_name in general_actions:
-                # We do not pop here bc the device_name is actually an action,
-                # and should be interpreted on the next step
-                return GenericDevice(context=context)
-            else:
-                input_.pop()
+            device_name = input_.prefix_from(device_class_map.keys())
 
         try:
             return device_class_map[device_name](
                 context=context
             )
         except KeyError:
-            raise NextCommandException(f"No device named {device_name}")
+            raise NextCommandException(f"No device named {input_.pop()}")
 
     def action_from(self, input_: CommandParser, context, device) -> DeviceAction:
         """
@@ -81,7 +85,7 @@ class VUI:
             action_name = context['action']
         else:
             try:
-                action_name = input_.pop()
+                action_name = input_.prefix_from(device.action_names())
             except IndexError:
                 raise NextCommandException(f"Must specify an action")
 
@@ -129,9 +133,12 @@ class VUI:
                 # TODO: A lot more stuff here (datatype, arg info, multiple args at once).
                 #       Maybe its own function
                 self.tts(f'Give a value for {arg_name}')
-                args[arg_name] = CommandParser(
-                    self.stt.listen()
-                ).pop_as_type(arg)
+
+                command = CommandParser(self.stt.listen())
+                args[arg_name] = command.pop_as_type(
+                    arg,
+                    num_words=len(command.words)
+                )
 
         for arg_name, arg in default_args:
             if arg_name not in args:
@@ -143,12 +150,17 @@ class VUI:
         """
         Runs the main VUI driver
         """
+        # Clearing context at start to have a fresh run
+        context = VUIContext()
+        context.clear()
+        context.save()
+
         while True:
             try:
                 if self.prompt is not None:
                     self.tts(self.prompt)
 
-                context = get_context()
+                context = VUIContext()
 
                 if context is None or not context.get('in_dialogue'):
                     # TODO: Do this wakeword better. Maybe have it be constructor arg to STT

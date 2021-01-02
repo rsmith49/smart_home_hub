@@ -119,6 +119,26 @@ class Volume(DeviceAction):
             requests.post(self.device.config['ip'] + endpoint)
 
 
+class PowerOn(DeviceAction):
+    _name = 'on'
+
+    def argmap(self):
+        return {}
+
+    def perform(self):
+        requests.post(self.device.config['ip'] + keypress_endpoint('powerOn'))
+
+
+class PowerOff(DeviceAction):
+    _name = 'off'
+
+    def argmap(self):
+        return {}
+
+    def perform(self):
+        requests.post(self.device.config['ip'] + keypress_endpoint('powerOff'))
+
+
 class RokuDevice(ContextDevice, ConfigurableDevice):
     """
     Represents a Roku Device we can interface with
@@ -132,5 +152,7 @@ class RokuDevice(ContextDevice, ConfigurableDevice):
     def actions(self) -> List[DeviceAction]:
         return super().actions() + [
             SetIP(self),
-            Volume(self)
+            Volume(self),
+            PowerOn(self),
+            PowerOff(self)
         ]

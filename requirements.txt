@@ -14,6 +14,7 @@ lxml==4.6.1
 marshmallow==3.10.0
 netdisco==2.8.2
 numpy==1.19.2
+pocketsphinx==0.1.15
 PyAudio==0.2.11
 python-dateutil==2.8.1
 python-dotenv==0.15.0

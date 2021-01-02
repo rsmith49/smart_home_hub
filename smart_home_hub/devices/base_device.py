@@ -71,14 +71,14 @@ class ListActions(DeviceAction):
     An action that all devices should have, which lists the actions available
     to the device in the response.
     """
-    _name = 'list'
+    _name = 'list_actions'
 
     def argmap(self) -> dict:
         return {}
 
     def perform(self):
         self.set_msg(
-            ', '.join(self.device.action_map().keys())
+            ', '.join(self.device.action_names())
         )
 
 
@@ -87,7 +87,7 @@ class ListActionArgs(DeviceAction):
     An action that all devices should have, which lists the arguments available
     to the action specified.
     """
-    _name = 'list_args'
+    _name = 'list_arguments'
 
     def argmap(self):
         return {
@@ -133,6 +133,14 @@ class Device(DescClass, metaclass=ABCMeta):
         return [
             ListActions(self),
             ListActionArgs(self)
+        ]
+
+    def action_names(self) -> List[str]:
+        """
+        Returns a list of the action names for the device
+        """
+        return [
+            action.name for action in self.actions()
         ]
 
     def action_map(self):

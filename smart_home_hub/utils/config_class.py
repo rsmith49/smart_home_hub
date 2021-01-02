@@ -114,6 +114,12 @@ class Config(MutableMapping, metaclass=ABCMeta):
 
         self.content = deepcopy(config_map.default_mapping)
 
+    def reset_content(self):
+        """
+        Method to reset the content to a blank dict.
+        """
+        self.content = {}
+
     @property
     def filepath(self):
         return CONFIG_BASE_DIR + self.rel_filepath()
