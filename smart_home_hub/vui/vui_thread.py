@@ -14,6 +14,7 @@ from smart_home_hub.devices.base_device import Device, DeviceAction
 from smart_home_hub.utils.config_class import Config
 from .general_actions import GenericDevice
 from .stt import SpeechToText, CommandParser
+from .tts import TextToSpeech
 
 
 class NextCommandException(Exception):
@@ -40,7 +41,7 @@ class VUI:
     # TODO: Make the device_name_from and action_name_from work for multi-word
     #       named devices and actions (and args I guess)
 
-    def __init__(self, tts, stt: SpeechToText):
+    def __init__(self, tts: TextToSpeech, stt: SpeechToText):
         """
         :param tts: Text to speech object
         :param stt: Speech to text object
@@ -132,7 +133,7 @@ class VUI:
                 # TODO: Specify more stuff here probably
                 # TODO: A lot more stuff here (datatype, arg info, multiple args at once).
                 #       Maybe its own function
-                self.tts(f'Give a value for {arg_name}')
+                self.tts.speak(f'Give a value for {arg_name}')
 
                 command = CommandParser(self.stt.listen())
                 args[arg_name] = command.pop_as_type(
@@ -158,14 +159,14 @@ class VUI:
         while True:
             try:
                 if self.prompt is not None:
-                    self.tts(self.prompt)
+                    self.tts.speak(self.prompt)
 
                 context = VUIContext()
 
                 if context is None or not context.get('in_dialogue'):
                     # TODO: Do this wakeword better. Maybe have it be constructor arg to STT
                     self.stt.listen_for_wakeword('Jarvis')
-                    self.tts('Listening...')
+                    self.tts.recognize_wakeword()
 
                 input_ = CommandParser(self.stt.listen())
 

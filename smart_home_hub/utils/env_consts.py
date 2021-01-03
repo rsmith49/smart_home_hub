@@ -6,4 +6,7 @@ import os
 
 API_PORT = os.environ.get('SHH_API_PORT')
 API_KEY = os.environ.get('SHH_API_KEY')
+
 CONFIG_BASE_DIR = os.environ.get('SHH_CONFIG_BASE_DIR')
+if CONFIG_BASE_DIR is None:
+    CONFIG_BASE_DIR = 'config/'
