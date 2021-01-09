@@ -4,6 +4,7 @@ MVP for speech to text using basic SpeechRecognition classes
 import speech_recognition as sr
 
 from .base_stt import SpeechToText
+from smart_home_hub.utils.env_consts import MIC_DEVICE_NDX
 
 
 class BasicSTT(SpeechToText):
@@ -22,14 +23,20 @@ class BasicSTT(SpeechToText):
         result = None
 
         while result is None:
-            result = self._listen(self.wakeword_rec_func).lower()
+            result = self._listen(
+                self.wakeword_rec_func,
+                phrase_time_limit=3.5
+            ).lower()
             if wakeword.lower() not in result:
                 result = None
 
     def listen(self):
-        return self._listen(self.transcribe_rec_func)
+        return self._listen(
+            self.transcribe_rec_func,
+            phrase_time_limit=7
+        )
 
-    def _listen_once(self, recognize_func):
+    def _listen_once(self, recognize_func, **listen_args):
         """
         Helper method to listen to one segment of sound, then return that
         chunk as text, or raise an sr.UnknownValueError
@@ -37,11 +44,18 @@ class BasicSTT(SpeechToText):
                                given a recognizer and audio
         """
         recognizer = sr.Recognizer()
-        with sr.Microphone() as source:
-            audio = recognizer.listen(source)
+        with sr.Microphone(MIC_DEVICE_NDX) as source:
+            if self.debug:
+                print('Listening...')
+
+            audio = recognizer.listen(source, **listen_args)
+
+            if self.debug:
+                print('Waiting on recognizer...')
+
             return recognize_func(recognizer, audio)
 
-    def _listen(self, recognize_func):
+    def _listen(self, recognize_func, **listen_args):
         """
         Listens and returns the audio using the specified recognize_func
         """
@@ -49,7 +63,7 @@ class BasicSTT(SpeechToText):
 
         while result is None:
             try:
-                result = self._listen_once(recognize_func)
+                result = self._listen_once(recognize_func, **listen_args)
             except sr.UnknownValueError:
                 pass
 

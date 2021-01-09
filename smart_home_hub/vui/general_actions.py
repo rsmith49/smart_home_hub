@@ -5,9 +5,9 @@ device, and at any time.
 from marshmallow import fields
 from typing import List
 
-from smart_home_hub.devices.base_device import DeviceAction
-from smart_home_hub.devices.context_device import ContextDevice
-from smart_home_hub.devices import device_class_map
+from smart_home_hub.device.base_device import DeviceAction
+from smart_home_hub.device.context_device import ContextDevice
+from smart_home_hub.device import device_class_map
 
 
 class ListDevices(DeviceAction):

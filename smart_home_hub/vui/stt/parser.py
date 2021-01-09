@@ -7,6 +7,26 @@ from word2number import w2n
 
 from smart_home_hub.utils.argmap_utils import FIELD_TO_STR_MAP
 
+WORD_NUM_MISTAKES = {
+    'won': 'one',
+    'wan': 'one',
+    'to': 'two',
+    'too': 'two',
+    'tu': 'two',
+    'for': 'four',
+    'ate': 'eight'
+}
+
+
+def voice_w2n(phrase):
+    """
+    Slightly more robust word2number converter to catch common stt mistakes
+    """
+    if phrase.lower() in WORD_NUM_MISTAKES:
+        return WORD_NUM_MISTAKES[phrase.lower()]
+
+    return w2n.word_to_num(phrase)
+
 
 class CommandParser:
 
@@ -80,12 +100,12 @@ class CommandParser:
             try:
                 return int(phrase)
             except ValueError:
-                return w2n.word_to_num(phrase)
+                return voice_w2n(phrase)
         elif field == 'float':
             try:
                 return float(phrase)
             except ValueError:
-                return w2n.word_to_num(phrase)
+                return voice_w2n(phrase)
         elif field == 'boolean':
             return bool(phrase)
         else:

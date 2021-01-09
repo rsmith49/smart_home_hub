@@ -9,8 +9,8 @@ handle on how to properly set this kind of project up.
 """
 from marshmallow import fields
 
-from smart_home_hub.devices import device_class_map
-from smart_home_hub.devices.base_device import Device, DeviceAction
+from smart_home_hub.device import device_class_map
+from smart_home_hub.device.base_device import Device, DeviceAction
 from smart_home_hub.utils.config_class import Config
 from .general_actions import GenericDevice
 from .stt import SpeechToText, CommandParser
@@ -38,8 +38,9 @@ class VUIContext(Config):
 
 
 class VUI:
-    # TODO: Make the device_name_from and action_name_from work for multi-word
-    #       named devices and actions (and args I guess)
+    """
+    Main driver for the voice activated commands
+    """
 
     def __init__(self, tts: TextToSpeech, stt: SpeechToText):
         """
@@ -94,7 +95,7 @@ class VUI:
             return device.action_map()[action_name]
         except KeyError:
             raise NextCommandException(
-                f"No action named {action_name} for device {device.name}"
+                f"No action named {input_.pop()} for device {device.name}"
             )
 
     def init_args_from(self, input_: CommandParser, context, action):

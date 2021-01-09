@@ -1,4 +1,4 @@
-from smart_home_hub.devices.base_device import Device, DeviceAction
+from smart_home_hub.device.base_device import Device, DeviceAction
 from .utils import argmap_resp_obj
 
 

@@ -10,7 +10,7 @@ sys.path.append(os.getcwd())
 
 from smart_home_hub.api.utils import APIInvalidError, get_context
 from smart_home_hub.api.device_resource import device_resp_obj, action_resp_obj
-from smart_home_hub.devices import device_class_map
+from smart_home_hub.device import device_class_map
 
 app = Flask(__name__)
 
