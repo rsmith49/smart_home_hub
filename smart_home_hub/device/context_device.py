@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Optional
 
 from .base_device import Device
-from smart_home_hub.utils.config_class import Config
+from smart_home_hub.utils.config import Config
 
 
 class ContextDevice(Device, metaclass=ABCMeta):

@@ -154,3 +154,25 @@ class Config(MutableMapping, metaclass=ABCMeta):
 
     def __iter__(self):
         return self.content.__iter__()
+
+
+def load_config(path):
+    """
+    Returns a config loaded from the path specified. Ideally, this config
+    is read-only. However, there will be no restrictions placed, so the
+    user can modify and save the config if it wishes
+    :param path: Filepath to the config. Relative to CONFIG_BASE_DIR
+    :return: A Config object containing the contents from the json file
+    """
+    class LoadedConfig(Config):
+        """
+        Helper class to act as the config for the specified path
+        """
+        def rel_filepath(self) -> str:
+            return path
+
+        @classmethod
+        def config_map(cls):
+            return {}
+
+    return LoadedConfig()

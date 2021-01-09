@@ -2,10 +2,11 @@ from typing import List, Union
 
 from .keypress_actions import Volume, Home, PowerOn, PowerOff, HDMI
 from .discover_ip import SetIP
+from .content_actions import PlayRandom, PlayContent
 from smart_home_hub.device.base_device import DeviceAction
 from smart_home_hub.device.configurable_device import ConfigurableDevice
 from smart_home_hub.device.context_device import ContextDevice
-from smart_home_hub.utils.config_class import Config, ConfigMap
+from smart_home_hub.utils.config import Config, ConfigMap
 
 
 class RokuConfig(Config):
@@ -38,5 +39,7 @@ class RokuDevice(ContextDevice, ConfigurableDevice):
             Home(self),
             PowerOn(self),
             PowerOff(self),
-            HDMI(self)
+            HDMI(self),
+            PlayRandom(self),
+            PlayContent(self)
         ]

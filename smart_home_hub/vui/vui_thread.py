@@ -11,7 +11,7 @@ from marshmallow import fields
 
 from smart_home_hub.device import device_class_map
 from smart_home_hub.device.base_device import Device, DeviceAction
-from smart_home_hub.utils.config_class import Config
+from smart_home_hub.utils.config import Config
 from .general_actions import GenericDevice
 from .stt import SpeechToText, CommandParser
 from .tts import TextToSpeech

@@ -83,6 +83,16 @@ class PowerOff(KeyPressAction):
         self.keypress('powerOff')
 
 
+class OK(KeyPressAction):
+    _name = 'ok'
+
+    def argmap(self) -> dict:
+        return {}
+
+    def perform(self):
+        self.keypress('Select')
+
+
 class HDMI(KeyPressAction):
     _name = 'hdmi'
 

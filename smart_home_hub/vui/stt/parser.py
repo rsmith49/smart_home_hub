@@ -23,7 +23,7 @@ def voice_w2n(phrase):
     Slightly more robust word2number converter to catch common stt mistakes
     """
     if phrase.lower() in WORD_NUM_MISTAKES:
-        return WORD_NUM_MISTAKES[phrase.lower()]
+        phrase = WORD_NUM_MISTAKES[phrase.lower()]
 
     return w2n.word_to_num(phrase)
 

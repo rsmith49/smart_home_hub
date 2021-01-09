@@ -1,6 +1,7 @@
 # Project Specific
 credentials/
 config/
+_tmp_audio_/
 
 # General Python/Pycharm files
 
