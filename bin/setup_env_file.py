@@ -24,7 +24,7 @@ ENV_VAR_INFO = [
     {
         'name': 'SHH_CONFIG_BASE_DIR',
         'desc': 'Base directory for config files to be stored',
-        'default': 'config'
+        'default': 'config/'
     },
     {
         'name': 'SHH_MIC_DEVICE_INDEX',

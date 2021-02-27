@@ -40,7 +40,7 @@ class ContentAction(DeviceAction, metaclass=ABCMeta):
 
 
 class PlayContent(ContentAction):
-    _name = 'play_content',
+    _name = 'play_content'
     _desc = 'Plays a specific piece of content given by service and name'
 
     def argmap(self) -> dict:
