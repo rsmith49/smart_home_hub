@@ -2,6 +2,7 @@
 This file contains a class to parse a text command once it has been translated
 from speech to text
 """
+# TODO: Have a 'verbal backslash' to switch into alphanumeric mode, etc.
 from typing import List
 from word2number import w2n
 

@@ -4,7 +4,6 @@ from marshmallow import fields
 from typing import List, Dict
 
 from ..utils.utils import DescClass
-from ..utils.config import Config
 
 
 class EarlyExitError(Exception):

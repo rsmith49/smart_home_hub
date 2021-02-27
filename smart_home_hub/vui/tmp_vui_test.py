@@ -8,14 +8,14 @@ sys.path.append(os.getcwd())
 load_dotenv(find_dotenv(raise_error_if_not_found=True, usecwd=True))
 
 from smart_home_hub.vui.vui_thread import VUI
-from smart_home_hub.vui.stt.basic_stt import BasicSTT
 from smart_home_hub.vui.tts.basic_tts import BasicTTS
+from smart_home_hub.vui.stt.pico_stt import PicoSTT
 
 
 def main():
     vui = VUI(
         BasicTTS(debug=True),
-        BasicSTT(debug=True)
+        PicoSTT(debug=True)
     )
     vui.run()
 
