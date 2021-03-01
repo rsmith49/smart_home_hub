@@ -39,6 +39,82 @@ class ContentAction(DeviceAction, metaclass=ABCMeta):
         return load_config('roku/content/channel_id_map.json')
 
 
+class RGPlayContent(ContentAction, metaclass=ABCMeta):
+    """
+    Base class for playing content (so that the command can be movie or show)
+    """
+    _content_type = None
+
+    def argmap(self) -> dict:
+        return {
+            'title': fields.Str(
+                required=True,
+                voice_ndx=1
+            ),
+            'service': fields.Str(
+                voice_ndx=0
+            )
+        }
+
+    def perform(self):
+        if self._content_type not in ['movie', 'show']:
+            raise NotImplementedError('Must set _content_type')
+
+        content_str = 'm' if self._content_type == 'movie' else 's'
+
+        title = self.args['title']
+        service = self.args.get('service')
+
+        channel_id_map = self.channel_id_map()
+
+        content_list = self.device.rg_client.query_content(content_str, title)
+
+        if len(content_list) == 0:
+            self.set_msg(
+                f'Could not find {self._content_type} with title {title}'
+            )
+            return
+
+        if self._content_type == 'movie':
+            service_id_map = self.device.rg_client.get_movie_viewing_id(
+                content_list[0]['id']
+            )
+        else:
+            service_id_map = self.device.rg_client.get_show_viewing_id(
+                content_list[0]['id']
+            )
+
+        if service is None:
+            services = [
+                s for s in service_id_map.keys()
+                if s in channel_id_map
+            ]
+
+            if len(services) == 0:
+                self.set_msg(f"Could not find compatible service")
+                return
+
+            service = services[0]
+
+        self.open_content(
+            channel_id_map[service],
+            service_id_map[service],
+            self._content_type
+        )
+
+
+class PlayMovie(RGPlayContent):
+    _name = 'play_movie'
+    _desc = 'Plays a movie on the Roku given a title (if found)'
+    _content_type = 'movie'
+
+
+class PlayShow(RGPlayContent):
+    _name = 'play_show'
+    _desc = 'Plays a show on the Roku given a title (if found)'
+    _content_type = 'show'
+
+
 class PlayContent(ContentAction):
     _name = 'play_content'
     _desc = 'Plays a specific piece of content given by service and name'

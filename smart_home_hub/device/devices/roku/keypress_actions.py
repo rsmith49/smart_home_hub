@@ -83,8 +83,8 @@ class PowerOff(KeyPressAction):
         self.keypress('powerOff')
 
 
-class OK(KeyPressAction):
-    _name = 'ok'
+class Select(KeyPressAction):
+    _name = 'select'
 
     def argmap(self) -> dict:
         return {}

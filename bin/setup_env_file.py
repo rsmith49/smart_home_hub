@@ -31,6 +31,14 @@ ENV_VAR_INFO = [
         'desc': 'Index of the microphone audio device, as given by PyAudio',
         'default': 'none',
         'additional_info_func': list_audio_devices
+    },
+    {
+        'name': 'SHH_RG_EMAIL',
+        'desc': 'A Reelgood email to use if using the account functionality'
+    },
+    {
+        'name': 'SHH_RG_PASS',
+        'desc': 'The password for the associated Reelgood account (if used)'
     }
 ]
 
@@ -53,7 +61,7 @@ def main():
 
         if len(input_str.strip()) > 0:
             env_vars[env_var['name']] = input_str.strip()
-        else:
+        elif env_var.get('default') is not None:
             env_vars[env_var['name']] = env_var['default']
 
     print('Writing to .env')
